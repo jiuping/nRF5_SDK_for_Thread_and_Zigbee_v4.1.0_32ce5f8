@@ -284,6 +284,12 @@ ota_zip:
 	nrfutil pkg generate --hw-version 52 --sd-req 0x00 --application-version 0x01020102 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --key-file priv.pem --app-boot-validation VALIDATE_ECDSA_P256_SHA256 app_dfu_package.zip --zigbee True --zigbee-manufacturer-id 123 --zigbee-image-type 321 --zigbee-comment good_image --zigbee-ota-hw-version 52 --zigbee-ota-fw-version 0x01020102
 ota_clean:
 	rm -rf *.zigbee *.zip
+flash_all:
+	nrfutil settings generate --family NRF52840 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --application-version 0x01010101 --bootloader-version 1 --bl-settings-version 2 --app-boot-validation VALIDATE_ECDSA_P256_SHA256 --key-file priv.pem settings.hex
+	mergehex -m $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex settings.hex -o dfu_client_settings.hex
+	#nrfjprog -f nrf52 -r --program ../../../../../../../dfu_folder/dfu_client_settings.hex --snr 683258433 --sectorerase
+	nrfjprog -f nrf52 --program dfu_client_settings.hex  --sectorerase
+	nrfjprog -f nrf52 --reset
 SDK_CONFIG_FILE := ../config/sdk_config.h
 CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
 sdk_config:
