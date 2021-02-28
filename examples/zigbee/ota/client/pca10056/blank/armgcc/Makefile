@@ -280,7 +280,10 @@ flash: default
 
 erase:
 	nrfjprog -f nrf52 --eraseall
-
+ota_zip:
+	nrfutil pkg generate --hw-version 52 --sd-req 0x00 --application-version 0x01020102 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --key-file priv.pem --app-boot-validation VALIDATE_ECDSA_P256_SHA256 app_dfu_package.zip --zigbee True --zigbee-manufacturer-id 123 --zigbee-image-type 321 --zigbee-comment good_image --zigbee-ota-hw-version 52 --zigbee-ota-fw-version 0x01020102
+ota_clean:
+	rm -rf *.zigbee *.zip
 SDK_CONFIG_FILE := ../config/sdk_config.h
 CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
 sdk_config:
